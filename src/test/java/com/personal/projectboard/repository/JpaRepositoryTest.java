@@ -34,14 +34,14 @@ class JpaRepositoryTest {
     @Test
     void givenTestData_whenSelecting_thenWorksFine() {
         // Given
-        articleRepository.saveAndFlush(Article.of("old article", "old content", "#spring"));
-        articleRepository.saveAndFlush(Article.of("new article", "new content", "#spring"));
+
 
         // When
         List<Article> articles = articleRepository.findAll();
+        long count = articles.stream().count();
 
         // Then
-        assertThat(articles).isNotNull().hasSize(2);
+        assertThat(articles).isNotNull().hasSize(6);
     }
 
     @DisplayName("insert 테스트")
@@ -86,6 +86,6 @@ class JpaRepositoryTest {
         articleRepository.delete(article);
 
         // Then
-        assertThat(articleRepository.count()).isEqualTo(0);
+        assertThat(articleRepository.count()).isEqualTo(6);
     }
 }
