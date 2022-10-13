@@ -2,6 +2,7 @@ package com.personal.projectboard.service;
 
 import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.domain.ArticleComment;
+import com.personal.projectboard.domain.UserAccount;
 import com.personal.projectboard.dto.ArticleCommentDto;
 import com.personal.projectboard.dto.ArticleCommentUpdateDto;
 import com.personal.projectboard.dto.ArticleDto;
@@ -42,7 +43,7 @@ class ArticleCommentServiceTest {
     void givenArticleId_whenSearchingComments_thenReturnArticleComments(){
         // Given
         Long articleId = 1L;
-        given(articleRepository.findById(articleId)).willReturn(Optional.of(Article.of("title", "content", "hashtag")));
+        given(articleRepository.findById(articleId)).willReturn(Optional.of(null));
 
         // When
         List<ArticleCommentDto> articleComments = sut.searchArticleComments(articleId);
