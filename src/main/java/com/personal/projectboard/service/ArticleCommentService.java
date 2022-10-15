@@ -2,7 +2,6 @@ package com.personal.projectboard.service;
 
 
 import com.personal.projectboard.dto.ArticleCommentDto;
-import com.personal.projectboard.dto.ArticleCommentUpdateDto;
 import com.personal.projectboard.repository.ArticleCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class ArticleCommentService {
     }
 
 
-    public void updateArticleComment(long articleCommentId, ArticleCommentUpdateDto dto) {
+    public void updateArticleComment(long articleCommentId, ArticleCommentDto dto) {
     }
 
     public void deleteArticleComment(long articleCommentId) {
