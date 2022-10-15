@@ -2,27 +2,18 @@ package com.personal.projectboard.service;
 
 import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.dto.ArticleDto;
-import com.personal.projectboard.dto.ArticleUpdateDto;
+import com.personal.projectboard.dto.UserAccountDto;
 import com.personal.projectboard.dto.type.SearchType;
 import com.personal.projectboard.repository.ArticleRepository;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.BDDAssumptions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static com.personal.projectboard.domain.QArticle.article;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 @DisplayName("비즈니스로직 - 게시글")
@@ -66,14 +57,10 @@ class ArticleServiceTest {
     @Test
     void givenArticleInfo_whenSavingArticle_thenSaveArticle(){
         // Given
-        ArticleDto dto = ArticleDto.of(
-                LocalDateTime.now(), "kim", "Title", "Content", "#Java"
-        );
-
         given(articleRepository.save(any(Article.class))).willReturn(null);
 
         // When
-        sut.saveArticle(dto);
+        sut.saveArticle(createArticleDto());
 
         // Then
         then(articleRepository).should().save(any(Article.class)); // save가 호출되었었는
@@ -86,7 +73,7 @@ class ArticleServiceTest {
         given(articleRepository.save(any(Article.class))).willReturn(null);
 
         // When
-        sut.updateArticle(1L, ArticleUpdateDto.of("Title", "Content", "#Java"));
+        sut.updateArticle(1L, createArticleDto());
 
         // Then
         then(articleRepository).should().save(any(Article.class));
@@ -103,6 +90,14 @@ class ArticleServiceTest {
 
         // Then
         then(articleRepository).should().delete(any(Article.class));
+    }
+
+    private UserAccountDto createUserDto() {
+        return UserAccountDto.of("tkt2k", "adsf!@#", "tkt2k@naver.com", "wboy", "great");
+    }
+
+    private ArticleDto createArticleDto() {
+        return ArticleDto.of(createUserDto(), "Title", "good content", "#JAVA");
     }
 
 }
