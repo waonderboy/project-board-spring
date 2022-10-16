@@ -1,19 +1,29 @@
 package com.personal.projectboard.controller;
 
 import com.personal.projectboard.config.SecurityConfig;
+import com.personal.projectboard.domain.Article;
+import com.personal.projectboard.domain.UserAccount;
+import com.personal.projectboard.dto.ArticleDto;
+import com.personal.projectboard.dto.ArticleWithCommentsDto;
+import com.personal.projectboard.dto.UserAccountDto;
+import com.personal.projectboard.service.ArticleService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,6 +34,9 @@ class ArticleControllerTest {
 
     private final MockMvc mockMvc;
 
+    @MockBean
+    private ArticleService articleService;
+
     public ArticleControllerTest(@Autowired MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
@@ -32,27 +45,36 @@ class ArticleControllerTest {
     @Test
     void givenNothing_whenRequestingArticlesView_thenReturnsArticlesView() throws Exception {
         // Given
+        given(articleService.searchArticles(eq(null), eq(null), any(Pageable.class)))
+                .willReturn(Page.empty());
 
-        // When & Then
+        // When
         mockMvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/index"))
-                .andExpect(model().attributeExists("articles")); // 키가 있는지 체크
+                .andExpect(model().attributeExists("articles"));
+        // Then
+        then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
     @Test
     void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
         // Given
+        long articleId = 1L;
+        given(articleService.getArticle(articleId)).willReturn(articleWithCommentsDto());
 
-        // When & Then
-        mockMvc.perform(get("/articles/1"))
+        // When
+        mockMvc.perform(get("/articles/" + articleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/details"))
                 .andExpect(model().attributeExists("article"))
                 .andExpect(model().attributeExists("articleComments"));
+
+        // Then
+        then(articleService).should().getArticle(articleWithCommentsDto().id());
     }
 
     @Disabled("구현 중")
@@ -79,5 +101,34 @@ class ArticleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/search-hashtag"));
+    }
+
+    private ArticleWithCommentsDto articleWithCommentsDto() {
+        return ArticleWithCommentsDto.of(
+                1L,
+                createUserAccountDto(),
+                "title",
+                "content",
+                "hashtag",
+                Set.of(),
+                LocalDateTime.now(),
+                "waonderboy",
+                LocalDateTime.now(),
+                "waonderboy"
+        );
+    }
+
+    private UserAccountDto createUserAccountDto () {
+        return UserAccountDto.of(
+                "wonon",
+                "adfas!@#!",
+                "kkk@gmail.com",
+                "freesia",
+                "vip",
+                LocalDateTime.now(),
+                "waonderboy",
+                LocalDateTime.now(),
+                "waonderboy"
+        );
     }
 }
