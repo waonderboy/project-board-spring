@@ -3,8 +3,11 @@ package com.personal.projectboard.dto.response;
 import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.dto.ArticleDto;
 import com.personal.projectboard.dto.UserAccountDto;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+
+import static org.springframework.util.StringUtils.*;
 
 public record ArticleResponse(
         Long id,
@@ -20,13 +23,17 @@ public record ArticleResponse(
     }
 
     public static ArticleResponse from(ArticleDto dto) {
+        String nickname = dto.userAccountDto().nickname();
+        if (!hasText(dto.userAccountDto().nickname())) {
+            nickname = dto.userAccountDto().userId();
+        }
         return new ArticleResponse(
                 dto.id(),
                 dto.title(),
                 dto.content(),
                 dto.hashtag(),
                 dto.createdAt(),
-                dto.userAccountDto().nickname(),
+                nickname,
                 dto.userAccountDto().email());
     }
 
