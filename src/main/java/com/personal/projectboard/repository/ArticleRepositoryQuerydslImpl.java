@@ -56,7 +56,7 @@ public class ArticleRepositoryQuerydslImpl implements ArticleRepositoryQuerydsl{
     private BooleanExpression containsKeywordMatchingSearchType(SearchType searchType, String keyword) {
         String type = String.valueOf(searchType);
         PathBuilder<Article> article = new PathBuilder<>(Article.class, "article");
-
-        return hasText(type) ? article.getString(type).contains(keyword) : null;
+        //TODO: type없고 키워드만 있을 경우
+        return type != null && keyword != null ? article.getString(type).contains(keyword) : null;
     }
 }
