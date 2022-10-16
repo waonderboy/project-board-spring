@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<thlogic>
+    <attr sel="#header" th:replace="header :: header"></attr>
+    <attr sel="#footer" th:replace="footer :: footer"></attr>
+
+    <attr sel="#article-main" th:object="${article}">
+        <attr sel="#article-header/h1" th:text="*{title}"></attr>
+        <attr sel="#nickname" th:text="*{nickname}"></attr>
+        <attr sel="#email" th:text="*{email}"></attr>
+        <attr sel="#created-at/time" th:datetime="*{article.createdAt}" th:text="*{#temporals.format(article.createdAt, 'yyyy-MM-dd')}"></attr>
+        <attr sel="#hashtag" th:text="*{hashtag}"></attr>
+        <attr sel="#article-content" th:text="*{content}"></attr>
+    </attr>
+
+    <attr sel="#article-comments" th:remove="all-but-first">
+        <attr sel="li[0]" th:each="articleComment : ${articleComments}">
+            <attr sel="div/strong" th:text="${articleComment.nickname}" />
+            <attr sel="div/small/time" th:datetime="${articleComment.createdAt}" th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}"/>
+            <attr sel="div/p" th:text="${articleComment.content}" />
+        </attr>
+    </attr>
+</thlogic>

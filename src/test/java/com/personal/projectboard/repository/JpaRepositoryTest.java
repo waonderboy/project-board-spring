@@ -2,6 +2,9 @@ package com.personal.projectboard.repository;
 
 import com.personal.projectboard.config.JpaConfig;
 import com.personal.projectboard.domain.Article;
+import com.personal.projectboard.domain.UserAccount;
+import com.personal.projectboard.dto.ArticleDto;
+import com.personal.projectboard.dto.UserAccountDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +25,15 @@ class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,
-                             @Autowired ArticleCommentRepository articleCommentRepository) {
+                             @Autowired ArticleCommentRepository articleCommentRepository,
+                             @Autowired UserAccountRepository userAccountRepository
+    ) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
 
 
@@ -34,22 +41,24 @@ class JpaRepositoryTest {
     @Test
     void givenTestData_whenSelecting_thenWorksFine() {
         // Given
-
-
+        UserAccount user = createUser();
+        userAccountRepository.save(user);
         // When
         List<Article> articles = articleRepository.findAll();
         long count = articles.stream().count();
 
         // Then
-        assertThat(articles).isNotNull().hasSize(6);
+        assertThat(articles).isNotNull().hasSize(123);
     }
 
     @DisplayName("insert 테스트")
     @Test
     void givenTestData_whenInserting_thenWorksFine() {
         // Given
+        UserAccount user = createUser();
+        userAccountRepository.save(user);
         long previousCount = articleRepository.count();
-        Article article = Article.of("new article", "new content", "#spring");
+        Article article = Article.of(user, "new article", "new content", "#spring");
         // When
         Article savedArticle = articleRepository.save(article);
 
@@ -61,7 +70,9 @@ class JpaRepositoryTest {
     @Test
     void givenTestData_whenUpdating_thenWorksFine() {
         // Given
-        Article savedArticle = articleRepository.saveAndFlush(Article.of("new article", "new content", "#spring"));
+        UserAccount user = createUser();
+        userAccountRepository.save(user);
+        Article savedArticle = articleRepository.saveAndFlush(Article.of(user, "new Title", "new content", "#spring"));
 
         Article findArticle = articleRepository.findById(savedArticle.getId()).orElseThrow();
         String changedHashtag = "#spring boot";
@@ -79,13 +90,27 @@ class JpaRepositoryTest {
     @Test
     void givenTestData_whenDeleting_thenWorksFine() {
         // Given
-        Article article = Article.of("new article", "new content", "#spring");
+        UserAccount user = createUser();
+        userAccountRepository.save(user);
+        Article article = Article.of(user,"new article", "new content", "#spring");
         articleRepository.saveAndFlush(article);
 
         // When
         articleRepository.delete(article);
 
         // Then
-        assertThat(articleRepository.count()).isEqualTo(6);
+        assertThat(articleRepository.count()).isEqualTo(123);
+    }
+
+    private UserAccountDto createUserDto() {
+        return UserAccountDto.of("tkt2k", "adsf!@#", "tkt2k@naver.com", "wboy", "great");
+    }
+
+    private ArticleDto createArticleDto() {
+        return ArticleDto.of(createUserDto(), "Title", "good content", "#JAVA");
+    }
+
+    private UserAccount createUser() {
+        return createUserDto().toEntity();
     }
 }
