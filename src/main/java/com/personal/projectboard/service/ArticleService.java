@@ -25,10 +25,25 @@ import static org.springframework.util.StringUtils.*;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+//    @Transactional(readOnly = true)
+//    public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
+//        return articleRepository.findBySearchCond(searchType, searchKeyword, pageable)
+//                .map(ArticleDto::from);
+//    }
+
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
-        return articleRepository.findBySearchCond(searchType, searchKeyword, pageable)
-                .map(ArticleDto::from);
+        if (searchKeyword == null || searchKeyword.isBlank()) {
+            return articleRepository.findAll(pageable).map(ArticleDto::from);
+        }
+
+        return switch (searchType) {
+            case TITLE -> articleRepository.findByTitleContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case HASHTAG -> articleRepository.findByHashtagContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case ID -> articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
+            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
+        };
     }
 
     @Transactional(readOnly = true)
@@ -55,5 +70,9 @@ public class ArticleService {
 
     public void deleteArticle(long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    public Long getArticleCount() {
+        return articleRepository.count();
     }
 }
