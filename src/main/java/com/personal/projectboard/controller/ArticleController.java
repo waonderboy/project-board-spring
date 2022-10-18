@@ -34,7 +34,7 @@ public class ArticleController {
     public String articles(
             @RequestParam(required = false) SearchType searchType,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 10, sort = "createAt", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             ModelMap map){
 
         Page<ArticleResponse> articlesPage = articleService.searchArticles(searchType, keyword, pageable)
@@ -55,6 +55,7 @@ public class ArticleController {
 
         map.addAttribute("article", article);
         map.addAttribute("articleComments", comments);
+        map.addAttribute("totalCount", articleService.getArticleCount());
 
         return "articles/details";
     }
