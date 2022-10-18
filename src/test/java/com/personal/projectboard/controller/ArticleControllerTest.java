@@ -1,8 +1,10 @@
 package com.personal.projectboard.controller;
 
 import com.personal.projectboard.config.SecurityConfig;
+import com.personal.projectboard.dto.ArticleDto;
 import com.personal.projectboard.dto.ArticleWithCommentsDto;
 import com.personal.projectboard.dto.UserAccountDto;
+import com.personal.projectboard.dto.type.SearchType;
 import com.personal.projectboard.service.ArticleService;
 import com.personal.projectboard.service.PaginationService;
 import org.junit.jupiter.api.Disabled;
@@ -61,6 +63,32 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("paginationBarNumbers"));
         // Then
         then(articleService).should().searchArticles(eq(null), eq(null), any(Pageable.class));
+        then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+
+    @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색 기능")
+    @Test
+    void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
+        // Given
+        SearchType searchType = SearchType.TITLE;
+        String keyword = "Lorem";
+
+        given(articleService.searchArticles(eq(searchType), eq(keyword), any(Pageable.class)))
+                .willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
+
+        // When
+        mockMvc.perform(get("/articles")
+                        .queryParam("searchType", String.valueOf(searchType))
+                        .queryParam("keyword", keyword)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/index"))
+                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attributeExists("searchTypes"));
+        // Then
+        then(articleService).should().searchArticles(eq(searchType), eq(keyword), any(Pageable.class));
         then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
 
