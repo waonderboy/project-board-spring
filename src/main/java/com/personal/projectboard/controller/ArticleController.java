@@ -1,6 +1,7 @@
 package com.personal.projectboard.controller;
 
 
+import com.personal.projectboard.dto.ArticleDto;
 import com.personal.projectboard.dto.response.ArticleCommentResponse;
 import com.personal.projectboard.dto.response.ArticleResponse;
 import com.personal.projectboard.dto.response.ArticleWithCommentsResponse;
@@ -59,6 +60,26 @@ public class ArticleController {
         map.addAttribute("totalCount", articleService.getArticleCount());
 
         return "articles/details";
+    }
+
+    @GetMapping("/search-hashtag")
+    public String searchHashtag(
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ) {
+        Page<ArticleResponse> articlesPage = articleService.searchArticlesViaHashtag(keyword, pageable)
+                .map(ArticleResponse::from);
+
+        List<String> hashtags = articleService.getHashtags();
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articlesPage.getTotalPages());
+
+        map.addAttribute("articles", articlesPage);
+        map.addAttribute("hashtags", hashtags);
+        map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchType", SearchType.HASHTAG);
+
+        return "articles/search-hashtag";
     }
 
 

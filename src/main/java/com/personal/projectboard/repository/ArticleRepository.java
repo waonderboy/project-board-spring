@@ -13,6 +13,7 @@ import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,5 +44,4 @@ public interface ArticleRepository extends
     long count();
 
     void deleteByIdAndUserAccount_UserId(Long articleId, String userid);
-
 }

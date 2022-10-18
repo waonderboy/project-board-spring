@@ -1,6 +1,7 @@
 package com.personal.projectboard.repository;
 
 import com.personal.projectboard.domain.Article;
+import com.personal.projectboard.domain.QArticle;
 import com.personal.projectboard.dto.type.SearchType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -28,6 +29,14 @@ public class ArticleRepositoryQuerydslImpl implements ArticleRepositoryQuerydsl{
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    @Override
+    public List<String> findAllDistinctHashtags() {
+        return queryFactory
+                .select(article.hashtag)
+                .from(article)
+                .distinct()
+                .fetch();
+    }
 
     @Override
     public Page<Article> findBySearchCond(SearchType searchType, String keyword, Pageable pageable) {
