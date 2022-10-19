@@ -1,4 +1,4 @@
-package com.personal.projectboard.dto.type;
+package com.personal.projectboard.dto.contant;
 
 import lombok.Getter;
 
