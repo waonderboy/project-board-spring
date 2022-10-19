@@ -3,3 +3,12 @@
   text-decoration: none;
   color: black;
 }
+#article-form > button {
+  float: right;
+}
+
+#article-form > button a {
+  float: right;
+  text-decoration: none;
+  color: black;
+}

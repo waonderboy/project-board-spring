@@ -17,6 +17,12 @@
                 <attr sel="div/p" th:text="${articleComment.content}" />
             </attr>
         </attr>
+
+        <attr sel="#article-buttons">
+            <attr sel="#delete-article-form" th:action="'/articles/' + *{id} + '/delete'" th:method="post"/>
+            <attr sel="#update-article" th:href="'/articles/' + *{id} + '/form'" />
+        </attr>
+
         <attr sel="#pagination">
             <attr sel="ul">
                 <attr sel="li[0]/a"
