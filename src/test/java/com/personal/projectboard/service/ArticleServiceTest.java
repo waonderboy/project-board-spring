@@ -4,7 +4,7 @@ import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.domain.UserAccount;
 import com.personal.projectboard.dto.ArticleDto;
 import com.personal.projectboard.dto.UserAccountDto;
-import com.personal.projectboard.dto.type.SearchType;
+import com.personal.projectboard.dto.contant.SearchType;
 import com.personal.projectboard.repository.ArticleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.persistence.EntityNotFoundException;
@@ -110,6 +109,26 @@ class ArticleServiceTest {
         then(articleRepository).should().findByTitleContaining(keyword, pageRequest);
     }
 
+    @DisplayName("게시글을 조회하면, 댓글과 함께 게시글을 반환한다")
+    @Test
+    void givenArticleId_whenSearchingArticle_thenReturnArticleWithComments(){
+        // Given
+        long articleId = 1L;
+        Article article = createArticle(articleId);
+        given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
+
+        // When
+        sut.getArticleWithComments(articleId);
+
+        // Then
+        assertThat(article).hasFieldOrPropertyWithValue("title", article.getTitle())
+                .hasFieldOrPropertyWithValue("content", article.getContent())
+                .hasFieldOrPropertyWithValue("hashtag", article.getHashtag())
+        ;
+
+        then(articleRepository).should().findById(articleId);
+    }
+
     @DisplayName("게시글을 조회하면, 게시글을 반환한다")
     @Test
     void givenArticleId_whenSearchingArticle_thenReturnArticle(){
@@ -170,7 +189,7 @@ class ArticleServiceTest {
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
 
         // When
-        sut.updateArticle(dto);
+        sut.updateArticle(1L, dto);
 
         // Then
         assertThat(article).hasFieldOrPropertyWithValue("title", dto.title())
@@ -187,7 +206,7 @@ class ArticleServiceTest {
         given(articleRepository.getReferenceById(articleDto.id())).willThrow((EntityNotFoundException.class));
 
         // When
-        sut.updateArticle(articleDto);
+        sut.updateArticle(1L, articleDto);
 
         //
         then(articleRepository).should().getReferenceById(articleDto.id());
