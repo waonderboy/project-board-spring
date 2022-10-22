@@ -10,16 +10,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("JPA 연결테스트")
-@Import(JpaConfig.class)
+@Import(JpaRepositoryTest.TestJpaConfig.class)
 @DataJpaTest
 class JpaRepositoryTest {
 
@@ -100,6 +105,15 @@ class JpaRepositoryTest {
 
         // Then
         assertThat(articleRepository.count()).isEqualTo(123);
+    }
+
+    @EnableJpaAuditing
+    @TestConfiguration
+    public static class TestJpaConfig {
+        @Bean
+        public AuditorAware<String> auditorAware() {
+            return () -> Optional.of("kim");
+        }
     }
 
     private UserAccountDto createUserDto() {
