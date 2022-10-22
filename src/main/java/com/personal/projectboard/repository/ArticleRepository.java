@@ -43,5 +43,6 @@ public interface ArticleRepository extends
 
     long count();
 
-    void deleteByIdAndUserAccount_UserId(Long articleId, String userid);
+
+    void deleteByIdAndUserAccount_UserId(long articleId, String userId);
 }
