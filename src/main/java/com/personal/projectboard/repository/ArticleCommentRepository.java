@@ -1,8 +1,6 @@
 package com.personal.projectboard.repository;
 
-import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.domain.ArticleComment;
-import com.personal.projectboard.domain.QArticle;
 import com.personal.projectboard.domain.QArticleComment;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.StringExpression;
@@ -29,4 +27,6 @@ public interface ArticleCommentRepository extends
     }
 
     List<ArticleComment> findByArticle_Id(Long articleId);
+
+    void deleteByIdAndArticleComment_UserId(Long articleCommentId, String userId);
 }

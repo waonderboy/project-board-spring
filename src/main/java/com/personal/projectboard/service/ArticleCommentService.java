@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -44,8 +43,8 @@ public class ArticleCommentService {
         }
     }
 
-    public void deleteArticleComment(long articleCommentId) {
-        articleCommentRepository.deleteById(articleCommentId);
+    public void deleteArticleComment(long articleCommentId, String userId) {
+        articleCommentRepository.deleteByIdAndArticleComment_UserId(articleCommentId, userId);
     }
 
 }
