@@ -6,6 +6,7 @@ import com.personal.projectboard.dto.ArticleDto;
 import com.personal.projectboard.dto.UserAccountDto;
 import com.personal.projectboard.dto.contant.SearchType;
 import com.personal.projectboard.repository.ArticleRepository;
+import com.personal.projectboard.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +32,8 @@ class ArticleServiceTest {
     private ArticleService sut; //sut 테스트 대상 mock을 주입하는 대상
     @Mock
     private ArticleRepository articleRepository;
+    @Mock
+    private UserAccountRepository userAccountRepository;
 
     @DisplayName("검색어로 게시글을 검색하면, 게시글 페이지를 반환한다. 검색어 없으면 전체페이지 조회")
     @Test
@@ -187,16 +190,18 @@ class ArticleServiceTest {
         Article article = createArticle(1L);
         ArticleDto dto = ArticleDto.from(article);
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
+        given(userAccountRepository.getReferenceById(dto.userAccountDto().userId())).willReturn(dto.userAccountDto().toEntity());
 
         // When
         sut.updateArticle(1L, dto);
 
         // Then
-        assertThat(article).hasFieldOrPropertyWithValue("title", dto.title())
+        assertThat(dto).hasFieldOrPropertyWithValue("title", dto.title())
                 .hasFieldOrPropertyWithValue("content", dto.content())
                 .hasFieldOrPropertyWithValue("hashtag", dto.hashtag());
 
         then(articleRepository).should().getReferenceById(dto.id());
+        then(userAccountRepository).should().getReferenceById(dto.userAccountDto().userId());
     }
 
     @DisplayName("없는 게시글의 수정정보를 입력하면 경고로그를 찍고 아무것도 하지않는다.")
@@ -219,13 +224,14 @@ class ArticleServiceTest {
     void givenArticleId_whenDeletingArticle_thenDeleteArticle(){
         // Given
         long articleId = 1L;
-        willDoNothing().given(articleRepository).deleteById(articleId);
+        String userId = "name";
+        willDoNothing().given(articleRepository).deleteByIdAndUserAccount_UserId(articleId, userId);
 
         // When
-        sut.deleteArticle(1L);
+        sut.deleteArticle(1L, userId);
 
         // Then
-        then(articleRepository).should().deleteById(articleId);
+        then(articleRepository).should().deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     private UserAccountDto createUserDto() {

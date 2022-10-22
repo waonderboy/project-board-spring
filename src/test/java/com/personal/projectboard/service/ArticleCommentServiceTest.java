@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
@@ -91,16 +90,16 @@ class ArticleCommentServiceTest {
 
     @DisplayName("게시글의 아이디가 주어지면 게시글을 삭제한다")
     @Test
-    void givenArticleId_whenDeletingComment_thenDeleteComment(){
+    void givenArticleId_whenDeletingComment_thenDeleteComment(String userId){
         // Given
         Long articleCommentId = 1L;
-        willDoNothing().given(articleCommentRepository).deleteById(articleCommentId);
+        willDoNothing().given(articleCommentRepository).deleteByIdAndArticleComment_UserId(articleCommentId, userId);
 
         // When
-        sut.deleteArticleComment(articleCommentId);
+        sut.deleteArticleComment(articleCommentId, userId);
 
         // Then
-        then(articleCommentRepository).should().deleteById(articleCommentId);
+        then(articleCommentRepository).should().deleteByIdAndArticleComment_UserId(articleCommentId, userId);
     }
 
     private ArticleCommentDto createArticleCommentDto(String content) {
