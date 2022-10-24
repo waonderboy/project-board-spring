@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.personal'
-version = 'v1.1'
+version = 'v1.2'
 sourceCompatibility = "16"
 
 configurations {
