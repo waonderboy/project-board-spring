@@ -42,7 +42,7 @@
                 keyword=${param.keyword}
             )}"/>
                 <attr sel="article-form" />
-                    <attr sel="button/a" th:text="글쓰기" th:href="@{/articles/form}"/>
+                    <attr sel="button/a" th:text="글쓰기" sec:authorize="isAuthenticated()" th:href="@{/articles/form}"/>
             </attr>
 
             <attr sel="tbody" th:remove="all-but-first">
