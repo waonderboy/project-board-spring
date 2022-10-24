@@ -1,6 +1,7 @@
 package com.personal.projectboard.repository;
 
 import com.personal.projectboard.config.JpaConfig;
+import com.personal.projectboard.config.TestSecurityConfig;
 import com.personal.projectboard.domain.Article;
 import com.personal.projectboard.domain.UserAccount;
 import com.personal.projectboard.dto.ArticleDto;

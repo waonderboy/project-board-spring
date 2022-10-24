@@ -90,9 +90,10 @@ class ArticleCommentServiceTest {
 
     @DisplayName("게시글의 아이디가 주어지면 게시글을 삭제한다")
     @Test
-    void givenArticleId_whenDeletingComment_thenDeleteComment(String userId){
+    void givenArticleId_whenDeletingComment_thenDeleteComment(){
         // Given
         Long articleCommentId = 1L;
+        String userId = "kim";
         willDoNothing().given(articleCommentRepository).deleteByIdAndUserAccount_UserId(articleCommentId, userId);
 
         // When
