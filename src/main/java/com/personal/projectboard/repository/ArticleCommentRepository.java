@@ -9,6 +9,7 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -28,5 +29,5 @@ public interface ArticleCommentRepository extends
 
     List<ArticleComment> findByArticle_Id(Long articleId);
 
-    void deleteByIdAndArticleComment_UserId(Long articleCommentId, String userId);
+    void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
 }
