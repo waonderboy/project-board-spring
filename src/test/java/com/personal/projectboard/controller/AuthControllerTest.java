@@ -1,10 +1,13 @@
 package com.personal.projectboard.controller;
 
 
+import com.personal.projectboard.config.TestSecurityConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -13,7 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @DisplayName("View 컨트롤러 - 인증 부분")
-@WebMvcTest
+@Import(TestSecurityConfig.class)
+@WebMvcTest(AuthControllerTest.class)
 public class AuthControllerTest {
 
     private final MockMvc mockMvc;
